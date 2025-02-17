@@ -1,0 +1,53 @@
+1. Install Python
+2.Install Vs Code
+
+pip install googletrans==4.0.0-rc1
+
+3.Create a new Python file named auto_translator.py in your desired project directory.
+ Add the following code to auto_translator.py:
+
+from googletrans import Translator
+
+def translate_text(text, target_languages):
+    translator = Translator()
+    translations = {}
+    for lang in target_languages:
+        translation = translator.translate(text, dest=lang)
+        translations[lang] = translation.text
+    return translations
+
+if __name__ == "__main__":
+    text_to_translate = "Hello, how are you?"
+    target_languages = [
+        'af', 'sq', 
+        'ar', 'hy', 
+        'bn', 'bs', 
+        'ca', 'hr', 
+        'cs', 'da', 
+        'nl', 'en', 
+        'eo', 'et', 
+        'tl', 'fi', 
+        'fr', 'de', 
+        'el', 'gu', 
+        'hi', 'hu', 
+        'id', 'it', 
+        'ja', 'jw', 
+        'km', 'ko', 
+        'la', 'lv', 
+        'ml', 'mr', 
+        'ne', 'pl', 
+        'pt', 'pa', 
+        'ro', 'ru', 
+        'sr', 'si', 
+        'sk', 'sl', 
+        'es', 'su', 
+        'sw', 'ta', 
+        'te', 'th', 
+        'tr', 'uk', 
+        'ur', 'vi', 
+        'cy', 'xh', 
+        'yi', 'zu'
+    ]
+    translations = translate_text(text_to_translate, target_languages)
+    for lang, translated_text in translations.items():
+        print(f"Translated to {lang}: {translated_text}")
