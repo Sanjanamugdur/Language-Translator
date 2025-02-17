@@ -1,0 +1,87 @@
+# Backend: Django + Django REST Framework
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Question
+
+# Views
+def home(request):
+    return render(request, 'quiz/home.html')
+
+def get_questions(request):
+    questions = list(Question.objects.values())
+    return JsonResponse({'questions': questions})
+
+# Models
+from django.db import models
+class Question(models.Model):
+    question = models.CharField(max_length=255)
+    options = models.JSONField()
+    answer = models.CharField(max_length=255)
+
+# Templates (HTML + CSS)
+# quiz/templates/quiz/home.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Quiz</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Online Quiz</h1>
+        <div id="question-container"></div>
+        <button id="next-btn">Next</button>
+        <h2 id="score"></h2>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
+
+# Static Files (CSS + JS)
+# quiz/static/style.css
+.quiz-container {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
+button {
+    padding: 10px;
+    margin-top: 10px;
+}
+
+# quiz/static/script.js
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("/get_questions")
+        .then(response => response.json())
+        .then(data => {
+            const questions = data.questions;
+            let currentIndex = 0;
+            let score = 0;
+            const questionContainer = document.getElementById("question-container");
+            const nextBtn = document.getElementById("next-btn");
+            const scoreDisplay = document.getElementById("score");
+
+            function displayQuestion() {
+                if (currentIndex < questions.length) {
+                    questionContainer.innerHTML = `<h2>${questions[currentIndex].question}</h2>` +
+                        questions[currentIndex].options.map(option => `<button onclick="checkAnswer('${option}')">${option}</button>`).join(" ");
+                } else {
+                    questionContainer.innerHTML = "Quiz Completed!";
+                    scoreDisplay.innerText = `Your Score: ${score}`;
+                }
+            }
+
+            window.checkAnswer = function(option) {
+                if (option === questions[currentIndex].answer) {
+                    score++;
+                }
+                currentIndex++;
+                displayQuestion();
+            };
+
+            nextBtn.addEventListener("click", displayQuestion);
+            displayQuestion();
+        });
+});
