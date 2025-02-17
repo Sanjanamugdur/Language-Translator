@@ -51,3 +51,7 @@ if __name__ == "__main__":
     translations = translate_text(text_to_translate, target_languages)
     for lang, translated_text in translations.items():
         print(f"Translated to {lang}: {translated_text}")
+
+
+4. To run the terminal : python auto_translator.py
+
